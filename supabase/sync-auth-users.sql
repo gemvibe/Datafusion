@@ -17,7 +17,7 @@ SELECT
     au.id,
     au.email,
     COALESCE(au.raw_user_meta_data->>'name', split_part(au.email, '@', 1), 'User') as name,
-    COALESCE(au.raw_user_meta_data->>'role', 'responder') as role,
+    COALESCE(au.raw_user_meta_data->>'role', 'user') as role,
     true as is_active
 FROM auth.users au
 LEFT JOIN public.users u ON au.id = u.id

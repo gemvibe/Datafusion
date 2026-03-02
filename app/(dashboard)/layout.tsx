@@ -23,9 +23,9 @@ export default function DashboardLayout({
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#F5F7FB] dark:bg-gray-900 transition-colors duration-200">
         <Navbar />
-        <main className="container mx-auto px-4 py-8">
+        <main className="px-6 py-6 dark:text-gray-100">
           {children}
         </main>
       </div>

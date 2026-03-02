@@ -89,19 +89,46 @@ export default function AdminIncidentsPage() {
     try {
       setLoading(true)
       setError(null)
-      console.log('📊 Loading incidents from API...')
+      console.log('📊 Loading incidents...')
       
-      // Use the API route instead of direct Supabase call
-      const response = await fetch('/api/incidents?limit=100')
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || errorData.details || 'Failed to load incidents')
+      // Try API route first, fallback to direct Supabase call
+      try {
+        const response = await fetch('/api/incidents?limit=100', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        
+        if (response.ok) {
+          const result = await response.json()
+          if (result.incidents) {
+            console.log(`✅ Loaded ${result.incidents.length} incidents from API`)
+            setIncidents(result.incidents)
+            return
+          }
+        } else {
+          console.warn('⚠️ API route failed, trying direct Supabase query...')
+        }
+      } catch (apiError) {
+        console.warn('⚠️ API route error, trying direct Supabase query...', apiError)
       }
       
-      const result = await response.json()
-      console.log(`✅ Loaded ${result.incidents?.length || 0} incidents from API`)
-      setIncidents(result.incidents || [])
+      // Fallback to direct Supabase call
+      console.log('📊 Loading incidents directly from Supabase...')
+      const { data, error: supabaseError } = await supabase
+        .from('incidents')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100)
+
+      if (supabaseError) {
+        console.error('Supabase error:', supabaseError)
+        throw new Error(supabaseError.message || 'Failed to load incidents')
+      }
+      
+      console.log(`✅ Loaded ${data?.length || 0} incidents from Supabase`)
+      setIncidents(data || [])
     } catch (err: any) {
       const errorMsg = err?.message || err?.toString() || 'Unknown error'
       console.error('❌ Error loading incidents:', errorMsg)
@@ -290,18 +317,18 @@ export default function AdminIncidentsPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Natural Disaster Reports</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Natural Disaster Reports</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Monitor and manage all natural disaster reports across Tamil Nadu
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             {loading ? (
               'Loading...'
             ) : (
               <>
-                <span className="font-bold text-2xl text-gray-900">{filteredIncidents.length}</span>{' '}
+                <span className="font-bold text-2xl text-gray-900 dark:text-gray-100">{filteredIncidents.length}</span>{' '}
                 {filter === 'all' ? 'total' : filter} reports
               </>
             )}
@@ -338,14 +365,14 @@ export default function AdminIncidentsPage() {
       )}
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow space-y-4">
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-4">
         {/* Status Filter */}
         <div className="flex gap-4 items-center">
-          <label className="text-sm font-semibold text-gray-700">Status:</label>
+          <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Status:</label>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-purple-500"
           >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
@@ -356,21 +383,21 @@ export default function AdminIncidentsPage() {
           </select>
           <button
             onClick={loadIncidents}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 transition-colors"
           >
             🔄 Refresh
           </button>
         </div>
 
         {/* Spam Filter */}
-        <div className="flex gap-2 items-center border-t pt-4">
-          <label className="text-sm font-semibold text-gray-700 mr-2">Spam Check:</label>
+        <div className="flex gap-2 items-center border-t dark:border-gray-700 pt-4">
+          <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 mr-2">Spam Check:</label>
           <button
             onClick={() => setSpamFilter('all')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               spamFilter === 'all'
                 ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             📋 All Reports
@@ -380,7 +407,7 @@ export default function AdminIncidentsPage() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               spamFilter === 'legitimate'
                 ? 'bg-green-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             ✓ Legitimate Only
@@ -390,7 +417,7 @@ export default function AdminIncidentsPage() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               spamFilter === 'spam'
                 ? 'bg-red-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             ⚠️ Spam Only
@@ -400,7 +427,7 @@ export default function AdminIncidentsPage() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               spamFilter === 'unchecked'
                 ? 'bg-orange-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             🔍 Unchecked
@@ -419,13 +446,13 @@ export default function AdminIncidentsPage() {
       {loading ? (
         <div className="text-center py-12">
           <div className="text-4xl mb-4">⏳</div>
-          <p className="text-gray-600">Loading emergency reports...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading emergency reports...</p>
         </div>
       ) : filteredIncidents.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
           <div className="text-6xl mb-4">📋</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Reports Found</h3>
-          <p className="text-gray-600">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">No Reports Found</h3>
+          <p className="text-gray-600 dark:text-gray-400">
             {filter === 'all'
               ? 'No disaster reports yet. They will appear here when submitted.'
               : `No ${filter} incidents at the moment.`}
@@ -436,12 +463,12 @@ export default function AdminIncidentsPage() {
           {filteredIncidents.map((incident) => (
             <div
               key={incident.id}
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2 flex-wrap">
-                    <h3 className="text-xl font-bold text-gray-900">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                       {incident.type?.toUpperCase() || 'EMERGENCY'}
                     </h3>
                     <span

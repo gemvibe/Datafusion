@@ -10,7 +10,7 @@ CREATE TABLE users (
   email TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
   phone TEXT,
-  role TEXT NOT NULL DEFAULT 'viewer' CHECK (role IN ('admin', 'command_center', 'responder', 'viewer')),
+  role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('admin', 'user')),
   relief_center_id UUID,
   team_id UUID,
   is_active BOOLEAN DEFAULT true,
@@ -168,10 +168,10 @@ CREATE POLICY "Users can view incidents" ON incidents
 CREATE POLICY "Users can create incidents" ON incidents
   FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
--- Allow admins and command center to update incidents
+-- Allow admins to update incidents
 CREATE POLICY "Admins can update incidents" ON incidents
   FOR UPDATE USING (
-    auth.jwt() ->> 'role' IN ('admin', 'command_center')
+    auth.jwt() ->> 'role' = 'admin'
   );
 
 -- Function to update updated_at timestamp

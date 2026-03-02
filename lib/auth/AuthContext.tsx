@@ -13,6 +13,12 @@ interface UserProfile {
   role: UserRole
   rescue_shelter_id?: string
   is_active: boolean
+  phone?: string
+  address?: string
+  latitude?: number
+  longitude?: number
+  landmark?: string
+  profile_completed?: boolean
 }
 
 interface AuthContextType {
@@ -22,6 +28,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string, name: string, role: UserRole) => Promise<void>
   signOut: () => Promise<void>
+  refreshProfile: () => Promise<void>
   isAdmin: boolean
   isCommandCenter: boolean
   isResponder: boolean
@@ -162,6 +169,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error
   }
 
+  const refreshProfile = async () => {
+    if (user) {
+      await loadUserProfile(user.id)
+    }
+  }
+
   const value = {
     user,
     profile,
@@ -169,6 +182,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signIn,
     signUp,
     signOut,
+    refreshProfile,
     isAdmin: profile?.role === 'admin',
     isCommandCenter: profile?.role === 'command_center',
     isResponder: profile?.role === 'responder',

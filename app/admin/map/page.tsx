@@ -48,22 +48,22 @@ export default function AdminMapPage() {
       {/* Header with Live Stats */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">🗺️ Admin Command Center Map</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">🗺️ Admin Command Center Map</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Real-time disaster monitoring and response coordination across Tamil Nadu
-            {!loading && <span className="ml-2 font-semibold text-purple-600">{stats.pending} Pending</span>}
+            {!loading && <span className="ml-2 font-semibold text-purple-600 dark:text-purple-400">{stats.pending} Pending</span>}
           </p>
         </div>
         {loading && (
-          <div className="flex items-center gap-2 text-sm text-purple-600">
+          <div className="flex items-center gap-2 text-sm text-purple-600 dark:text-purple-400">
             <div className="animate-spin">⟳</div>
             <span>Syncing live data...</span>
           </div>
         )}
         {!loading && incidents.length > 0 && (
           <div className="text-right">
-            <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
-            <div className="text-xs text-gray-500">Total Reports</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.total}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">Total Reports</div>
           </div>
         )}
       </div>
@@ -91,15 +91,15 @@ export default function AdminMapPage() {
       )}
 
       {/* Map Controls - Admin Panel */}
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-lg p-4">
+      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
         <div className="flex flex-wrap items-center gap-4">
           {/* Status Filters */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-gray-700">Filter:</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter:</span>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+              className="text-sm border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:outline-none"
             >
               <option value="all">All Disasters ({incidents.length})</option>
               <option value="pending">Pending ({stats.pending})</option>
@@ -117,7 +117,7 @@ export default function AdminMapPage() {
                 onChange={(e) => setShowRouting(e.target.checked)}
                 className="w-4 h-4 text-purple-600 rounded focus:ring-2 focus:ring-purple-500"
               />
-              <span className="font-medium text-gray-700">Show Routing</span>
+              <span className="font-medium text-gray-700 dark:text-gray-300">Show Routing</span>
             </label>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <input
@@ -126,7 +126,7 @@ export default function AdminMapPage() {
                 onChange={(e) => setHighlightCritical(e.target.checked)}
                 className="w-4 h-4 text-purple-600 rounded focus:ring-2 focus:ring-purple-500"
               />
-              <span className="font-medium text-gray-700">Highlight Hotspots</span>
+              <span className="font-medium text-gray-700 dark:text-gray-300">Highlight Hotspots</span>
             </label>
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function AdminMapPage() {
       {/* Priority Statistics - Admin Dashboard */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Critical */}
-        <div className="bg-white rounded-lg shadow-md border-l-4 border-red-500 p-4 hover:shadow-lg transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border-l-4 border-red-500 p-4 hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-2">
             <div className="text-3xl">🆘</div>
             {stats.critical > 0 && (
@@ -144,38 +144,38 @@ export default function AdminMapPage() {
               </div>
             )}
           </div>
-          <div className="text-sm font-medium text-gray-600 mb-1">Critical</div>
-          <div className="text-3xl font-bold text-red-600">{stats.critical}</div>
-          <div className="text-xs text-gray-500 mt-1">Severity 8-10 • Immediate action</div>
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Critical</div>
+          <div className="text-3xl font-bold text-red-600 dark:text-red-400">{stats.critical}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Severity 8-10 • Immediate action</div>
         </div>
 
         {/* High Priority */}
-        <div className="bg-white rounded-lg shadow-md border-l-4 border-orange-500 p-4 hover:shadow-lg transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border-l-4 border-orange-500 p-4 hover:shadow-lg transition-shadow">
           <div className="text-3xl mb-2">⚠️</div>
-          <div className="text-sm font-medium text-gray-600 mb-1">High</div>
-          <div className="text-3xl font-bold text-orange-600">{stats.high}</div>
-          <div className="text-xs text-gray-500 mt-1">Severity 6-7 • Deploy teams</div>
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">High</div>
+          <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">{stats.high}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Severity 6-7 • Deploy teams</div>
         </div>
 
         {/* Moderate */}
-        <div className="bg-white rounded-lg shadow-md border-l-4 border-yellow-500 p-4 hover:shadow-lg transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border-l-4 border-yellow-500 p-4 hover:shadow-lg transition-shadow">
           <div className="text-3xl mb-2">📍</div>
-          <div className="text-sm font-medium text-gray-600 mb-1">Moderate</div>
-          <div className="text-3xl font-bold text-yellow-600">{stats.medium}</div>
-          <div className="text-xs text-gray-500 mt-1">Severity 4-5 • Standard</div>
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Moderate</div>
+          <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{stats.medium}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Severity 4-5 • Standard</div>
         </div>
 
         {/* Low */}
-        <div className="bg-white rounded-lg shadow-md border-l-4 border-green-500 p-4 hover:shadow-lg transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border-l-4 border-green-500 p-4 hover:shadow-lg transition-shadow">
           <div className="text-3xl mb-2">✅</div>
-          <div className="text-sm font-medium text-gray-600 mb-1">Low</div>
-          <div className="text-3xl font-bold text-green-600">{stats.low}</div>
-          <div className="text-xs text-gray-500 mt-1">Severity 1-3 • Monitoring</div>
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Low</div>
+          <div className="text-3xl font-bold text-green-600 dark:text-green-400">{stats.low}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Severity 1-3 • Monitoring</div>
         </div>
       </div>
 
       {/* Map Container */}
-      <div className="bg-white rounded-lg shadow-lg p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
         <IncidentMap 
           incidents={filteredIncidents} 
           showRouting={showRouting}
@@ -186,8 +186,8 @@ export default function AdminMapPage() {
       {/* Admin Intelligence Panel */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Map Legend */}
-        <div className="bg-white border border-gray-200 rounded-lg p-5 shadow">
-          <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow">
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
             <span>📍</span>
             <span>Map Legend</span>
           </h3>
@@ -197,8 +197,8 @@ export default function AdminMapPage() {
                 🆘
               </div>
               <div className="flex-1">
-                <div className="font-semibold text-red-700">Critical (8-10)</div>
-                <div className="text-xs text-gray-600">Life-threatening disasters</div>
+                <div className="font-semibold text-red-700 dark:text-red-400">Critical (8-10)</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">Life-threatening disasters</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -206,8 +206,8 @@ export default function AdminMapPage() {
                 ⚠️
               </div>
               <div className="flex-1">
-                <div className="font-semibold text-orange-700">High (6-7)</div>
-                <div className="text-xs text-gray-600">Urgent response needed</div>
+                <div className="font-semibold text-orange-700 dark:text-orange-400">High (6-7)</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">Urgent response needed</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -215,8 +215,8 @@ export default function AdminMapPage() {
                 📍
               </div>
               <div className="flex-1">
-                <div className="font-semibold text-yellow-700">Moderate (4-5)</div>
-                <div className="text-xs text-gray-600">Standard monitoring</div>
+                <div className="font-semibold text-yellow-700 dark:text-yellow-400">Moderate (4-5)</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">Standard monitoring</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -224,29 +224,29 @@ export default function AdminMapPage() {
                 ✅
               </div>
               <div className="flex-1">
-                <div className="font-semibold text-green-700">Low (1-3)</div>
-                <div className="text-xs text-gray-600">Routine check</div>
+                <div className="font-semibold text-green-700 dark:text-green-400">Low (1-3)</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">Routine check</div>
               </div>
             </div>
-            <div className="flex items-center gap-3 pt-2 border-t">
+            <div className="flex items-center gap-3 pt-2 border-t dark:border-gray-700">
               <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white text-lg">
                 🏥
               </div>
               <div className="flex-1">
-                <div className="font-semibold text-blue-700">Rescue Shelters</div>
-                <div className="text-xs text-gray-600">Response team locations</div>
+                <div className="font-semibold text-blue-700 dark:text-blue-400">Rescue Shelters</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">Response team locations</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Admin Capabilities */}
-        <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-lg p-5 shadow">
-          <h3 className="font-bold text-purple-900 mb-3 flex items-center gap-2">
+        <div className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-5 shadow">
+          <h3 className="font-bold text-purple-900 dark:text-purple-300 mb-3 flex items-center gap-2">
             <span>⚡</span>
             <span>Admin Command Features</span>
           </h3>
-          <div className="space-y-2 text-sm text-gray-700">
+          <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
             <div className="flex items-start gap-2">
               <span className="text-purple-600 font-bold">✓</span>
               <div>
@@ -284,8 +284,8 @@ export default function AdminMapPage() {
               </div>
             </div>
           </div>
-          <div className="mt-4 pt-3 border-t border-purple-300">
-            <div className="text-xs text-purple-800 font-medium">
+          <div className="mt-4 pt-3 border-t border-purple-300 dark:border-purple-700">
+            <div className="text-xs text-purple-800 dark:text-purple-300 font-medium">
               💡 Admin view shows all incidents with full management capabilities
             </div>
           </div>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
 
-type UserRole = 'admin' | 'command_center' | 'responder' | 'viewer'
+type UserRole = 'admin' | 'user'
 
 interface User {
   id: string
@@ -73,9 +73,7 @@ export default function AdminUsersPage() {
   const getRoleBadgeColor = (role: UserRole) => {
     switch (role) {
       case 'admin': return 'bg-purple-100 text-purple-800'
-      case 'command_center': return 'bg-blue-100 text-blue-800'
-      case 'responder': return 'bg-green-100 text-green-800'
-      case 'viewer': return 'bg-gray-100 text-gray-800'
+      case 'user': return 'bg-blue-100 text-blue-800'
     }
   }
 
@@ -84,8 +82,8 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tamil Nadu User Management</h1>
-          <p className="text-gray-600 mt-1">Manage Tamil Nadu system users and their permissions</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Tamil Nadu User Management</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage Tamil Nadu system users and their permissions</p>
         </div>
       </div>
 
@@ -113,38 +111,38 @@ export default function AdminUsersPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Total Users</p>
-          <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Total Users</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{users.length}</p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Admins</p>
-          <p className="text-2xl font-bold text-purple-600">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Admins</p>
+          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
             {users.filter(u => u.role === 'admin').length}
           </p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Responders</p>
-          <p className="text-2xl font-bold text-green-600">
-            {users.filter(u => u.role === 'responder').length}
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Users</p>
+          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            {users.filter(u => u.role === 'user').length}
           </p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Active</p>
-          <p className="text-2xl font-bold text-blue-600">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Active</p>
+          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
             {users.filter(u => u.is_active).length}
           </p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow">
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
         <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium text-gray-700">Filter by role:</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by role:</span>
           <button
             onClick={() => setFilter('all')}
             className={`px-3 py-1 text-sm rounded ${
-              filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+              filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
             }`}
           >
             All
@@ -152,91 +150,75 @@ export default function AdminUsersPage() {
           <button
             onClick={() => setFilter('admin')}
             className={`px-3 py-1 text-sm rounded ${
-              filter === 'admin' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'
+              filter === 'admin' ? 'bg-purple-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
             }`}
           >
             Admin
           </button>
           <button
-            onClick={() => setFilter('command_center')}
+            onClick={() => setFilter('user')}
             className={`px-3 py-1 text-sm rounded ${
-              filter === 'command_center' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+              filter === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
             }`}
           >
-            Command Center
-          </button>
-          <button
-            onClick={() => setFilter('responder')}
-            className={`px-3 py-1 text-sm rounded ${
-              filter === 'responder' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700'
-            }`}
-          >
-            Responder
-          </button>
-          <button
-            onClick={() => setFilter('viewer')}
-            className={`px-3 py-1 text-sm rounded ${
-              filter === 'viewer' ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-700'
-            }`}
-          >
-            Viewer
+            User
           </button>
         </div>
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 User
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Role
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Created
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                   Loading users...
                 </td>
               </tr>
             ) : filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                   No users found
                 </td>
               </tr>
             ) : (
               filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
+                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{user.name}</div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{user.email}</div>
+                    <div className="text-sm text-gray-900 dark:text-gray-100">{user.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-medium rounded ${getRoleBadgeColor(user.role)}`}>
@@ -252,7 +234,7 @@ export default function AdminUsersPage() {
                       {user.is_active ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {new Date(user.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

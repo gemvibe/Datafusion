@@ -72,9 +72,13 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('📊 GET /api/incidents called')
+    
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const limit = parseInt(searchParams.get('limit') || '50')
+
+    console.log(`Fetching incidents with status: ${status || 'all'}, limit: ${limit}`)
 
     // Build query
     let query = supabaseAdmin
@@ -91,25 +95,35 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query
 
     if (error) {
-      console.error('Database error:', error)
+      console.error('❌ Database error:', error)
       return NextResponse.json(
-        { error: 'Failed to fetch incidents' },
+        { 
+          error: 'Failed to fetch incidents',
+          details: error.message,
+          hint: error.hint || 'Check database connection and RLS policies'
+        },
         { status: 500 }
       )
     }
 
+    console.log(`✅ Successfully fetched ${data?.length || 0} incidents`)
+
     return NextResponse.json(
       {
         success: true,
-        incidents: data,
-        count: data.length,
+        incidents: data || [],
+        count: data?.length || 0,
       },
       { status: 200 }
     )
-  } catch (error) {
-    console.error('API error:', error)
+  } catch (error: any) {
+    console.error('❌ API error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: error?.message || 'Unknown error occurred',
+        stack: process.env.NODE_ENV === 'development' ? error?.stack : undefined
+      },
       { status: 500 }
     )
   }

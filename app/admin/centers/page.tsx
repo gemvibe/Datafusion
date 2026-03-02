@@ -162,12 +162,12 @@ export default function AdminCentersPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tamil Nadu Rescue Shelters Management</h1>
-          <p className="text-gray-600 mt-1">Manage rescue shelters and emergency facilities across Tamil Nadu</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Tamil Nadu Rescue Shelters Management</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage rescue shelters and emergency facilities across Tamil Nadu</p>
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600"
         >
           + Add Center
         </button>
@@ -175,14 +175,14 @@ export default function AdminCentersPage() {
 
       {/* Add Center Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Add New Rescue Shelter</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Add New Rescue Shelter</h2>
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                  className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 text-2xl"
                 >
                   ×
                 </button>
@@ -361,25 +361,25 @@ export default function AdminCentersPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Total Centers</p>
-          <p className="text-2xl font-bold text-gray-900">{centers.length}</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Total Centers</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{centers.length}</p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Active</p>
-          <p className="text-2xl font-bold text-green-600">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Active</p>
+          <p className="text-2xl font-bold text-green-600 dark:text-green-500">
             {centers.filter(c => c.operational_status?.toLowerCase() === 'active').length}
           </p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Full</p>
-          <p className="text-2xl font-bold text-red-600">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Full</p>
+          <p className="text-2xl font-bold text-red-600 dark:text-red-500">
             {centers.filter(c => c.operational_status?.toLowerCase() === 'full').length}
           </p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Total Capacity</p>
-          <p className="text-2xl font-bold text-blue-600">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Total Capacity</p>
+          <p className="text-2xl font-bold text-blue-600 dark:text-blue-500">
             {centers.reduce((sum, c) => sum + c.capacity, 0)}
           </p>
         </div>
@@ -393,17 +393,17 @@ export default function AdminCentersPage() {
           </div>
         ) : centers.length === 0 ? (
           <div className="col-span-3 text-center py-12">
-            <p className="text-gray-500">No centers found</p>
+            <p className="text-gray-500 dark:text-gray-400">No centers found</p>
           </div>
         ) : (
           centers.map((center) => (
-            <div key={center.id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6">
+            <div key={center.id} className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center">
                   <span className="text-3xl mr-3">{getTypeIcon(center.type)}</span>
                   <div>
-                    <h3 className="font-semibold text-lg text-gray-900">{center.name}</h3>
-                    <p className="text-sm text-gray-500">{center.type || 'Unknown Type'}</p>
+                    <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">{center.name}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{center.type || 'Unknown Type'}</p>
                   </div>
                 </div>
                 <span className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor(center.operational_status)}`}>
@@ -413,34 +413,34 @@ export default function AdminCentersPage() {
 
               <div className="space-y-2 text-sm">
                 <div className="flex items-start">
-                  <span className="text-gray-400 mr-2">📍</span>
-                  <span className="text-gray-700">{center.address}</span>
+                  <span className="text-gray-400 dark:text-gray-500 mr-2">📍</span>
+                  <span className="text-gray-700 dark:text-gray-300">{center.address}</span>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-gray-400 mr-2">📞</span>
-                  <span className="text-gray-700">{center.contact_phone}</span>
+                  <span className="text-gray-400 dark:text-gray-500 mr-2">📞</span>
+                  <span className="text-gray-700 dark:text-gray-300">{center.contact_phone}</span>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-gray-400 mr-2">👥</span>
-                  <span className="text-gray-700">Capacity: {center.capacity}</span>
+                  <span className="text-gray-400 dark:text-gray-500 mr-2">👥</span>
+                  <span className="text-gray-700 dark:text-gray-300">Capacity: {center.capacity}</span>
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t flex space-x-2">
-                <button className="flex-1 px-3 py-2 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100">
+              <div className="mt-4 pt-4 border-t dark:border-gray-700 flex space-x-2">
+                <button className="flex-1 px-3 py-2 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
                   ✏️ Edit
                 </button>
                 <a
                   href={`https://www.google.com/maps?q=${center.latitude},${center.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 px-3 py-2 text-sm bg-green-50 text-green-600 rounded hover:bg-green-100 text-center"
+                  className="flex-1 px-3 py-2 text-sm bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded hover:bg-green-100 dark:hover:bg-green-900/50 text-center transition-colors"
                 >
                   🗺️ View on Map
                 </a>
                 <a
                   href={`tel:${center.contact_phone}`}
-                  className="flex-1 px-3 py-2 text-sm bg-gray-50 text-gray-600 rounded hover:bg-gray-100 text-center"
+                  className="flex-1 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-600 text-center transition-colors"
                 >
                   📞 Call
                 </a>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
+import { useTheme } from '@/lib/theme/ThemeProvider'
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -12,6 +13,7 @@ export default function AdminDashboard() {
     criticalIncidents: 0,
   })
   const [loading, setLoading] = useState(true)
+  const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
     loadStats()
@@ -35,7 +37,7 @@ export default function AdminDashboard() {
         totalUsers: usersCount.count || 0,
         totalIncidents: incidentsCount.count || 0,
         totalCenters: centersCount.count || 0,
-        activeResponders: 0, // Will be calculated later
+        activeResponders: 0,
         criticalIncidents: criticalCount.count || 0,
       })
     } catch (error) {
@@ -48,123 +50,169 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Tamil Nadu Admin Dashboard</h1>
-        <p className="text-gray-600 mt-1">Complete system overview and management for Tamil Nadu</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Tamil Nadu Admin Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Complete system oversight and management for Tamil Nadu</p>
+        </div>
+        
+        {/* Dark Mode Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="p-3 rounded-lg bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 shadow-sm"
+          aria-label="Toggle dark mode"
+        >
+          {theme === 'dark' ? (
+            <span className="text-2xl">☀️</span>
+          ) : (
+            <span className="text-2xl">🌙</span>
+          )}
+        </button>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      {/* Stats Grid - Kanban Style */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Users */}
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 transition-colors duration-200">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Total Users</h3>
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Users</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {loading ? '...' : stats.totalUsers}
-              </p>
+            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+              {loading ? '...' : stats.totalUsers}
             </div>
-            <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
-              <span className="text-2xl">👥</span>
-            </div>
+            <div className="text-4xl">👥</div>
           </div>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Registered system users</p>
         </div>
 
         {/* Total Incidents */}
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 transition-colors duration-200">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Total Incidents</h3>
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Incidents</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {loading ? '...' : stats.totalIncidents}
-              </p>
+            <div className="text-3xl font-bold text-red-600 dark:text-red-400">
+              {loading ? '...' : stats.totalIncidents}
             </div>
-            <div className="h-12 w-12 bg-red-100 rounded-full flex items-center justify-center">
-              <span className="text-2xl">🚨</span>
-            </div>
+            <div className="text-4xl">🚨</div>
           </div>
-        </div>
-
-        {/* Critical Incidents */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Critical</p>
-              <p className="text-3xl font-bold text-red-600 mt-2">
-                {loading ? '...' : stats.criticalIncidents}
-              </p>
-            </div>
-            <div className="h-12 w-12 bg-red-200 rounded-full flex items-center justify-center">
-              <span className="text-2xl">⚠️</span>
-            </div>
-          </div>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            {stats.criticalIncidents} critical pending
+          </p>
         </div>
 
         {/* Rescue Shelters */}
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 transition-colors duration-200">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Rescue Shelters</h3>
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Rescue Shelters</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {loading ? '...' : stats.totalCenters}
-              </p>
+            <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+              {loading ? '...' : stats.totalCenters}
             </div>
-            <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
-              <span className="text-2xl">🏥</span>
-            </div>
+            <div className="text-4xl">🏥</div>
           </div>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Active relief centers</p>
         </div>
 
         {/* Active Responders */}
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 transition-colors duration-200">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Active Teams</h3>
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Active Responders</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {loading ? '...' : stats.activeResponders}
-              </p>
+            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+              {loading ? '...' : stats.activeResponders}
             </div>
-            <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
-              <span className="text-2xl">🚑</span>
+            <div className="text-4xl">🚑</div>
+          </div>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Response teams on duty</p>
+        </div>
+      </div>
+
+      {/* Admin Features */}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow transition-colors duration-200">
+        <h3 className="text-lg font-semibold mb-4 dark:text-gray-100">Admin Features</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-start">
+            <span className="text-2xl mr-3">👥</span>
+            <div>
+              <div className="font-medium dark:text-gray-100">User Management</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Manage system users and roles</div>
+            </div>
+          </div>
+          <div className="flex items-start">
+            <span className="text-2xl mr-3">🏥</span>
+            <div>
+              <div className="font-medium dark:text-gray-100">Center Configuration</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Configure rescue shelters and resources</div>
+            </div>
+          </div>
+          <div className="flex items-start">
+            <span className="text-2xl mr-3">🗺️</span>
+            <div>
+              <div className="font-medium dark:text-gray-100">Map Management</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Control map layers and visualizations</div>
+            </div>
+          </div>
+          <div className="flex items-start">
+            <span className="text-2xl mr-3">📊</span>
+            <div>
+              <div className="font-medium dark:text-gray-100">System Analytics</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">View detailed reports and insights</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Admin Actions */}
+      {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* User Management */}
-        <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
-          <h3 className="text-lg font-semibold mb-2">User Management</h3>
-          <p className="text-gray-600 text-sm mb-4">Manage system users and permissions</p>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition-all duration-200">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="text-3xl">👥</div>
+            <div>
+              <h3 className="text-lg font-semibold dark:text-gray-100">User Management</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                Manage system users and permissions
+              </p>
+            </div>
+          </div>
           <a
             href="/admin/users"
-            className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+            className="inline-block w-full text-center bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
           >
             Manage Users →
           </a>
         </div>
 
         {/* Center Management */}
-        <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
-          <h3 className="text-lg font-semibold mb-2">Rescue Shelters</h3>
-          <p className="text-gray-600 text-sm mb-4">Configure rescue shelters and resources</p>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition-all duration-200">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="text-3xl">🏥</div>
+            <div>
+              <h3 className="text-lg font-semibold dark:text-gray-100">Rescue Shelters</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                Configure rescue shelters and resources
+              </p>
+            </div>
+          </div>
           <a
             href="/admin/centers"
-            className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
+            className="inline-block w-full text-center bg-green-600 dark:bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors"
           >
             Manage Centers →
           </a>
         </div>
       </div>
 
-      {/* Admin Notice */}
-      <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-purple-900 mb-2">🔐 Administrator Access</h3>
-        <p className="text-purple-700 text-sm">
-          You have full administrative privileges. You can manage all users, incidents, relief
-          centers, and system settings. Use this access responsibly.
-        </p>
+      {/* System Status */}
+      <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-6 transition-colors duration-200">
+        <div className="flex items-start gap-3">
+          <div className="text-2xl">🔐</div>
+          <div>
+            <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-300 mb-2">
+              Administrator Access
+            </h3>
+            <p className="text-purple-700 dark:text-purple-400 text-sm">
+              You have full administrative privileges. You can manage all users, incidents, relief
+              centers, and system settings. Use this access responsibly.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )

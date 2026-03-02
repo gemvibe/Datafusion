@@ -22,7 +22,7 @@ CREATE TABLE users (
   email TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
   phone TEXT,
-  role TEXT NOT NULL DEFAULT 'viewer' CHECK (role IN ('admin', 'command_center', 'responder', 'viewer')),
+  role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('admin', 'user')),
   rescue_shelter_id UUID,
   team_id UUID,
   is_active BOOLEAN DEFAULT true,

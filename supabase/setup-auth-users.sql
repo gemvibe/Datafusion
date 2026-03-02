@@ -26,13 +26,12 @@ SELECT
   au.email,
   CASE 
     WHEN au.email = 'admin@first72.in' THEN 'TN Admin'
-    WHEN au.email = 'user@first72.in' THEN 'John Responder'
+    WHEN au.email = 'user@first72.in' THEN 'TN User'
     ELSE COALESCE(au.raw_user_meta_data->>'name', split_part(au.email, '@', 1))
   END as name,
   CASE 
     WHEN au.email = 'admin@first72.in' THEN 'admin'
-    WHEN au.email = 'user@first72.in' THEN 'responder'
-    ELSE 'responder'
+    ELSE 'user'
   END as role,
   true as is_active,
   CASE 
@@ -71,12 +70,12 @@ DECLARE
   user_count INT;
 BEGIN
   SELECT COUNT(*) INTO admin_count FROM users WHERE email = 'admin@first72.in' AND role = 'admin';
-  SELECT COUNT(*) INTO user_count FROM users WHERE email = 'user@first72.in' AND role = 'responder';
+  SELECT COUNT(*) INTO user_count FROM users WHERE email = 'user@first72.in' AND role = 'user';
   
   IF admin_count > 0 AND user_count > 0 THEN
     RAISE NOTICE '✅ SUCCESS! User profiles created:';
     RAISE NOTICE '   👤 admin@first72.in (role: admin)';
-    RAISE NOTICE '   👤 user@first72.in (role: responder)';
+    RAISE NOTICE '   👤 user@first72.in (role: user)';
     RAISE NOTICE '';
     RAISE NOTICE '🚀 You can now login:';
     RAISE NOTICE '   Admin: admin@first72.in / admin123 → /admin';
