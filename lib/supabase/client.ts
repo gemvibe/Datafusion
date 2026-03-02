@@ -4,13 +4,23 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('❌ Supabase environment variables missing!')
+  console.error('NEXT_PUBLIC_SUPABASE_URL:', supabaseUrl ? 'Set' : 'Missing')
+  console.error('NEXT_PUBLIC_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Set' : 'Missing')
   throw new Error(
-    'Missing Supabase environment variables. Please check your .env file:\n' +
+    'Missing Supabase environment variables. Please check your .env.local file:\n' +
     'NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are required.'
   )
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+console.log('✅ Supabase client initialized:', supabaseUrl)
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  }
+})
 
 // Server-side client with service role (for admin operations)
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY

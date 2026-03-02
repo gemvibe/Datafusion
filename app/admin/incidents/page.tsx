@@ -89,25 +89,19 @@ export default function AdminIncidentsPage() {
     try {
       setLoading(true)
       setError(null)
-      console.log('📊 Loading incidents...')
+      console.log('📊 Loading incidents from API...')
       
-      const { data, error: supabaseError } = await supabase
-        .from('incidents')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100)
-
-      if (supabaseError) {
-        console.error('❌ Supabase error:')
-        console.error('  Message:', supabaseError.message || 'No message')
-        console.error('  Details:', supabaseError.details || 'No details')
-        console.error('  Hint:', supabaseError.hint || 'No hint')
-        console.error('  Code:', supabaseError.code || 'No code')
-        throw new Error(supabaseError.message || 'Failed to load incidents')
+      // Use the API route instead of direct Supabase call
+      const response = await fetch('/api/incidents?limit=100')
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || errorData.details || 'Failed to load incidents')
       }
-
-      console.log(`✅ Loaded ${data?.length || 0} incidents`)
-      setIncidents(data || [])
+      
+      const result = await response.json()
+      console.log(`✅ Loaded ${result.incidents?.length || 0} incidents from API`)
+      setIncidents(result.incidents || [])
     } catch (err: any) {
       const errorMsg = err?.message || err?.toString() || 'Unknown error'
       console.error('❌ Error loading incidents:', errorMsg)
@@ -127,60 +121,39 @@ export default function AdminIncidentsPage() {
 
   const updateStatus = async (id: string, newStatus: string) => {
     try {
-      console.log('🔄 Updating incident status:', id, '→', newStatus)
+      console.log('🔄 Updating incident status via API:', id, '→', newStatus)
       
-      const { data, error } = await supabase
-        .from('incidents')
-        .update({ status: newStatus })
-        .eq('id', id)
-        .select()
+      const response = await fetch('/api/incidents', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+          updates: { status: newStatus }
+        })
+      })
 
-      if (error) {
-        // Log error details properly
-        console.error('❌ Supabase error:')
-        console.error('  Message:', error.message || 'No message')
-        console.error('  Details:', error.details || 'No details')
-        console.error('  Hint:', error.hint || 'No hint')
-        console.error('  Code:', error.code || 'No code')
-        console.error('  Full error:', JSON.stringify(error, null, 2))
-        
-        // Throw a more descriptive error
-        const errorMsg = error.message || 'Unknown database error - RLS may be blocking this operation'
-        throw new Error(errorMsg)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || errorData.details || 'Failed to update status')
       }
 
-      console.log('✅ Status updated successfully:', data)
+      const result = await response.json()
+      console.log('✅ Status updated successfully:', result.incident)
       
       // Update local state
       setIncidents((current) =>
         current.map((i) => (i.id === id ? { ...i, status: newStatus } : i))
       )
     } catch (error: any) {
-      // Extract error information properly
       const errorMsg = error?.message || error?.toString() || 'Unknown error occurred'
-      const errorDetails = error?.details || ''
-      const errorHint = error?.hint || ''
       
-      console.error('❌ Caught error:')
-      console.error('  Type:', typeof error)
-      console.error('  Message:', errorMsg)
-      console.error('  Details:', errorDetails)
-      console.error('  Hint:', errorHint)
-      console.error('  Stack:', error?.stack)
+      console.error('❌ Error updating status:', errorMsg)
       
       // Show appropriate user message
-      if (errorMsg.includes('RLS') || errorMsg.includes('Unknown database error')) {
-        alert('⚠️ PERMISSION DENIED\n\n' +
-              'Row Level Security is blocking this update.\n\n' +
-              'FIX: Go to Supabase SQL Editor and run:\n' +
-              'supabase/disable-rls-only.sql\n\n' +
-              'This will allow all database operations.')
-      } else if (errorMsg.includes('SSL') || errorMsg.includes('fetch') || errorMsg.includes('Network')) {
-        alert('⚠️ Network error: Unable to connect to database. Please check your internet connection and try again.')
-      } else if (errorMsg.includes('policy') || errorMsg.includes('permission')) {
-        alert('⚠️ Permission denied: Please run disable-rls-only.sql in Supabase SQL Editor.')
-      } else if (errorMsg.includes('Unknown error')) {
-        alert('⚠️ Failed to update status. Please check the browser console for details.')
+      if (errorMsg.includes('Network') || errorMsg.includes('fetch')) {
+        alert('⚠️ Network error: Unable to connect. Please check your internet connection and try again.')
       } else {
         alert(`⚠️ Failed to update status: ${errorMsg}`)
       }

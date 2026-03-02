@@ -30,7 +30,7 @@ export function Navbar() {
             {/* Logo */}
             <div className="flex flex-shrink-0 items-center">
               <Link href="/" className="text-2xl font-bold text-blue-600">
-                First72 TN
+                Hope Link
               </Link>
             </div>
 

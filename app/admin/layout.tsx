@@ -29,7 +29,7 @@ export default function AdminLayout({
               <div className="flex items-center">
                 <Link href="/admin" className="text-2xl font-bold text-white flex items-center">
                   <span className="mr-2">⚡</span>
-                  First72 TN Admin
+                  Hope Link Admin
                 </Link>
               </div>
 

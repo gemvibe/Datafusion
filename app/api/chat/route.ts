@@ -31,10 +31,54 @@ const SYSTEM_PROMPT = `You are an AI Emergency Assistant for Tamil Nadu's First7
 
 Remember: You're here to save lives and coordinate disaster response across Tamil Nadu.`
 
+// System prompt for incident reporting mode
+const INCIDENT_PROMPT = `You are an AI assistant helping users report natural disaster incidents. You need to collect the following information step by step in a conversational manner:
+
+1. **Disaster Type** (flood, earthquake, cyclone, tsunami, landslide, heatwave)
+2. **Description** - What's happening? Details about the situation
+3. **Location** - Full address or landmark (city/district name required)
+4. **Contact Name** - Reporter's name
+5. **Contact Phone** - Reporter's phone number
+6. **Coordinates** (optional) - Latitude and Longitude if available
+
+**Your approach:**
+- When first activated, welcome them to incident reporting mode and ask for disaster type
+- Ask ONE question at a time in a friendly, calm manner
+- After each response, acknowledge it and ask for the next piece of information
+- Be empathetic - people are stressed during disasters
+- If information seems incomplete, ask clarifying questions
+- Extract information from natural language responses
+- When ALL required fields are collected, confirm all details back to the user in a summary
+
+**Important:**
+- Keep your questions short and clear
+- Use reassuring language
+- If they mention immediate danger, remind them to call 112 first
+- For location, encourage them to be specific (street name, landmark, district)
+- Guide them through the process step-by-step
+
+**First message format when activated:**
+"📋 I'm now in Incident Reporting Mode. I'll help you report this step by step.
+
+First, what type of natural disaster are you experiencing?
+• 🌊 Flood
+• 🏚️ Earthquake  
+• 🌀 Cyclone
+• 🌊 Tsunami
+• ⛰️ Landslide
+• 🌡️ Heatwave"
+
+**Format your responses:**
+- Start with acknowledgment of their previous answer
+- Then ask the next question clearly
+- Add context why you're asking if helpful
+
+Continue asking questions until all information is collected, then provide a complete summary for confirmation.`
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { messages, action } = body
+    const { messages, action, incidentMode, incidentData } = body
 
     if (!process.env.GOOGLE_GEMINI_API_KEY) {
       return NextResponse.json(
@@ -46,10 +90,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Choose system prompt based on mode
+    const systemPrompt = incidentMode ? INCIDENT_PROMPT : SYSTEM_PROMPT
+
     // Get the Gemini model with system instruction
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
-      systemInstruction: SYSTEM_PROMPT,
+      systemInstruction: systemPrompt,
       generationConfig: {
         temperature: 0.7,
         topK: 40,
@@ -79,10 +126,28 @@ export async function POST(request: NextRequest) {
     }
 
     // Build conversation history (excluding the current message)
-    const conversationHistory = messages.slice(0, -1).map((msg: { role: string; content: string }) => ({
+    // Filter to ensure proper alternation between user and model messages
+    const rawHistory = messages.slice(0, -1).map((msg: { role: string; content: string }) => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.content }],
     }))
+    
+    // Remove consecutive messages with the same role (Gemini requires alternation)
+    const conversationHistory: Array<{ role: string; parts: Array<{ text: string }> }> = []
+    for (const msg of rawHistory) {
+      const lastMsg = conversationHistory[conversationHistory.length - 1]
+      if (!lastMsg || lastMsg.role !== msg.role) {
+        conversationHistory.push(msg)
+      } else {
+        // Merge consecutive messages from the same role
+        lastMsg.parts[0].text += '\n\n' + msg.parts[0].text
+      }
+    }
+
+    // Gemini requires history to start with user message, remove leading model messages
+    while (conversationHistory.length > 0 && conversationHistory[0].role === 'model') {
+      conversationHistory.shift()
+    }
 
     // Start chat with history
     const chat = model.startChat({
@@ -94,15 +159,26 @@ export async function POST(request: NextRequest) {
     const response = await result.response
     const text = response.text()
 
-    // Check if the response suggests filing a report
-    const shouldFileReport = text.toLowerCase().includes('report') || 
-                            text.toLowerCase().includes('incident') ||
-                            text.toLowerCase().includes('file')
+    // Check if the response suggests filing a report (only in normal mode)
+    const shouldFileReport = !incidentMode && (
+      text.toLowerCase().includes('report') || 
+      text.toLowerCase().includes('incident') ||
+      text.toLowerCase().includes('file')
+    )
+
+    // In incident mode, check if user wants to start reporting
+    const startIncidentMode = !incidentMode && (
+      userMessage.toLowerCase().includes('report an incident') ||
+      userMessage.toLowerCase().includes('file a report') ||
+      userMessage.toLowerCase().includes('create incident') ||
+      userMessage.toLowerCase().includes('submit report')
+    )
 
     return NextResponse.json({
       success: true,
       message: text,
       suggestReport: shouldFileReport,
+      startIncidentMode,
       metadata: {
         model: 'gemini-2.5-flash',
         timestamp: new Date().toISOString(),

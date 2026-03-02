@@ -70,8 +70,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single()
 
       if (error) {
+        console.log('Profile fetch error:', error.code, error.message, error.details)
+        
         // If user doesn't exist (e.g., Google OAuth first time), create profile
         if (error.code === 'PGRST116') {
+          console.log('User profile not found, creating new profile...')
           const { data: authUser } = await supabase.auth.getUser()
           if (authUser.user) {
             const newProfile = {
@@ -82,13 +85,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               is_active: true,
             }
             
+            console.log('Creating profile:', newProfile)
             const { data: createdProfile, error: createError } = await supabase
               .from('users')
               .insert(newProfile)
               .select()
               .single()
 
+            if (createError) {
+              console.error('Error creating profile:', createError.code, createError.message, createError.details)
+            }
+
             if (!createError && createdProfile) {
+              console.log('Profile created successfully:', createdProfile)
               setProfile(createdProfile)
               setLoading(false)
               return
@@ -98,8 +107,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
       setProfile(data)
-    } catch (error) {
-      console.error('Error loading profile:', error)
+    } catch (error: any) {
+      console.error('Error loading profile:', {
+        message: error?.message,
+        code: error?.code,
+        details: error?.details,
+        hint: error?.hint,
+        error: error
+      })
     } finally {
       setLoading(false)
     }

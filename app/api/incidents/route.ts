@@ -114,3 +114,61 @@ export async function GET(request: NextRequest) {
     )
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { id, updates } = body
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Incident ID is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!updates || Object.keys(updates).length === 0) {
+      return NextResponse.json(
+        { error: 'No updates provided' },
+        { status: 400 }
+      )
+    }
+
+    // Update the incident
+    const { data, error } = await supabaseAdmin
+      .from('incidents')
+      .update(updates)
+      .eq('id', id)
+      .select()
+
+    if (error) {
+      console.error('Database error:', error)
+      return NextResponse.json(
+        { error: 'Failed to update incident', details: error.message },
+        { status: 500 }
+      )
+    }
+
+    if (!data || data.length === 0) {
+      return NextResponse.json(
+        { error: 'Incident not found' },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        incident: data[0],
+        message: 'Incident updated successfully',
+      },
+      { status: 200 }
+    )
+  } catch (error) {
+    console.error('API error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}

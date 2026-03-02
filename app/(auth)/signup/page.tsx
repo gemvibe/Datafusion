@@ -2,72 +2,79 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/lib/auth/AuthContext'
+import { supabase } from '@/lib/supabase/client'
 import Link from 'next/link'
-
-type UserRole = 'admin' | 'command_center' | 'responder' | 'viewer'
 
 export default function SignupPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [role, setRole] = useState<UserRole>('responder')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const { signUp } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-
-    // Validation
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
-      return
-    }
-
     setLoading(true)
 
     try {
-      await signUp(email, password, name, role)
+      // Sign up with Supabase Auth (disable email confirmation)
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+          },
+          emailRedirectTo: undefined,
+        },
+      })
+
+      if (authError) throw authError
+
+      // Create user profile
+      if (authData.user) {
+        const { error: profileError } = await supabase.from('users').insert({
+          id: authData.user.id,
+          email,
+          name,
+          role: 'responder', // Default role
+          is_active: true,
+        })
+
+        if (profileError && profileError.code !== '23505') { // Ignore duplicate key error
+          throw profileError
+        }
+      }
+
+      // Redirect to login
       router.push('/login')
     } catch (err: any) {
-      setError(err.message || 'Failed to create account. Please try again.')
+      setError(err.message || 'Failed to create account')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 py-12">
       <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
-        {/* Logo/Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             <span className="text-4xl mr-2">⚡</span>
-            First72 TN
+            Hope Link
           </h1>
-          <p className="text-gray-600">Tamil Nadu Disaster Management</p>
+          <p className="text-gray-600">Create your account</p>
         </div>
 
-        {/* Signup Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <h2 className="text-2xl font-semibold text-gray-800 text-center">Create Account</h2>
-
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
               {error}
             </div>
           )}
 
-          {/* Name Field */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Full Name
@@ -84,10 +91,9 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* Email Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address
+              Email
             </label>
             <input
               id="email"
@@ -101,25 +107,6 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* Role Selection */}
-          <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-              Role
-            </label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value as UserRole)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              disabled={loading}
-            >
-              <option value="responder">Responder</option>
-              <option value="command_center">Command Center</option>
-              <option value="viewer">Viewer</option>
-            </select>
-          </div>
-
-          {/* Password Field */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -133,36 +120,18 @@ export default function SignupPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="••••••••"
               disabled={loading}
+              minLength={6}
             />
           </div>
 
-          {/* Confirm Password Field */}
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="••••••••"
-              disabled={loading}
-            />
-          </div>
-
-          {/* Sign Up Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-blue-300"
           >
             {loading ? 'Creating account...' : 'Sign Up'}
           </button>
 
-          {/* Sign In Link */}
           <p className="text-center text-sm text-gray-600">
             Already have an account?{' '}
             <Link href="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
