@@ -29,7 +29,7 @@ export default function AdminLayout({
               <div className="flex items-center">
                 <Link href="/admin" className="text-2xl font-bold text-white flex items-center">
                   <span className="mr-2">⚡</span>
-                  DataFusion Admin
+                  First72 TN Admin
                 </Link>
               </div>
 
@@ -40,6 +40,12 @@ export default function AdminLayout({
                   className="px-3 py-2 text-sm font-medium text-white hover:bg-purple-700 rounded-md transition-colors"
                 >
                   Dashboard
+                </Link>
+                <Link
+                  href="/admin/map"
+                  className="px-3 py-2 text-sm font-medium text-white hover:bg-purple-700 rounded-md transition-colors"
+                >
+                  Map
                 </Link>
                 <Link
                   href="/admin/users"
@@ -58,12 +64,6 @@ export default function AdminLayout({
                   className="px-3 py-2 text-sm font-medium text-white hover:bg-purple-700 rounded-md transition-colors"
                 >
                   Incidents
-                </Link>
-                <Link
-                  href="/admin/settings"
-                  className="px-3 py-2 text-sm font-medium text-white hover:bg-purple-700 rounded-md transition-colors"
-                >
-                  Settings
                 </Link>
               </div>
 

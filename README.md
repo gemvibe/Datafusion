@@ -1,6 +1,6 @@
-# DataFusion - AI-Powered Disaster Management Platform
+# First72 Tamil Nadu - AI-Powered Disaster Response Platform
 
-A comprehensive disaster management platform with AI-powered emergency assistance, smart dispatch system, and real-time coordination capabilities.
+Tamil Nadu's comprehensive disaster response platform with AI-powered emergency assistance, smart dispatch system, and real-time coordination capabilities.
 
 ## 🚀 Features
 
@@ -22,7 +22,7 @@ A comprehensive disaster management platform with AI-powered emergency assistanc
 - Escalation to dispatch tickets
 
 ### Smart Dispatch
-- Nearest relief center routing
+- Nearest rescue shelter routing
 - Load-aware center selection  
 - Priority queue management
 - Critical medical fast-track
@@ -33,7 +33,7 @@ A comprehensive disaster management platform with AI-powered emergency assistanc
 ### Command Center
 - Live incident map with real-time updates
 - Hotspot heatmap visualization
-- Relief center status monitoring
+- Rescue shelter status monitoring
 - Real-time incident feed
 - AI explanation panel
 - System analytics dashboard
@@ -161,7 +161,7 @@ datafusion/
 │   │   ├── map/            # Live incident map
 │   │   ├── incidents/      # Incident management
 │   │   ├── dispatch/       # Dispatch system
-│   │   ├── centers/        # Relief centers
+│   │   ├── centers/        # Rescue shelters
 │   │   ├── teams/          # Responder teams
 │   │   ├── analytics/      # Analytics & reports
 │   │   ├── chatbot/        # AI Emergency Assistant
@@ -207,7 +207,7 @@ Tables
 ```
 - users           // Responders, admins, command center
 - incidents       // SOS reports with AI analysis
-- relief_centers  // Emergency response centers
+- rescue_shelters  // Emergency response shelters
 - dispatch_tickets // Dispatch assignments
 - chat_sessions   // Chatbot conversations
 - chat_messages   // Chat history
@@ -276,7 +276,7 @@ GET    /api/incidents        # List incidents
 POST   /api/ai/triage       # AI triage processing
 POST   /api/chatbot         # Chatbot conversation
 POST   /api/dispatch        # Create dispatch
-GET    /api/centers         # List relief centers
+GET    /api/centers         # List rescue shelters
 POST   /api/responders      # Update responder status
 ```
 

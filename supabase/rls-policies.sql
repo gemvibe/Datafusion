@@ -68,15 +68,15 @@ CREATE POLICY "Authenticated users can update tickets" ON dispatch_tickets
   );
 
 -- ===================================================================
--- RELIEF CENTERS POLICIES
+-- RESCUE SHELTERS POLICIES
 -- ===================================================================
 
--- Everyone can view relief centers (public info)
-CREATE POLICY "Public can view relief centers" ON relief_centers
+-- Everyone can view rescue shelters (public info)
+CREATE POLICY "Public can view rescue shelters" ON rescue_shelters
   FOR SELECT USING (true);
 
--- Authenticated users can manage centers (role checks in app)
-CREATE POLICY "Authenticated users can manage relief centers" ON relief_centers
+-- Authenticated users can manage shelters (role checks in app)
+CREATE POLICY "Authenticated users can manage rescue shelters" ON rescue_shelters
   FOR ALL USING (auth.role() = 'authenticated');
 
 -- ===================================================================

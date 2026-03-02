@@ -23,7 +23,7 @@ export default function AdminDashboard() {
       const [usersCount, incidentsCount, centersCount, criticalCount] = await Promise.all([
         supabase.from('users').select('*', { count: 'exact', head: true }),
         supabase.from('incidents').select('*', { count: 'exact', head: true }),
-        supabase.from('relief_centers').select('*', { count: 'exact', head: true }),
+        supabase.from('rescue_shelters').select('*', { count: 'exact', head: true }),
         supabase
           .from('incidents')
           .select('*', { count: 'exact', head: true })
@@ -49,8 +49,8 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-gray-600 mt-1">Complete system overview and management</p>
+        <h1 className="text-3xl font-bold text-gray-900">Tamil Nadu Admin Dashboard</h1>
+        <p className="text-gray-600 mt-1">Complete system overview and management for Tamil Nadu</p>
       </div>
 
       {/* Stats Grid */}
@@ -100,11 +100,11 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Relief Centers */}
+        {/* Rescue Shelters */}
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Relief Centers</p>
+              <p className="text-sm font-medium text-gray-600">Rescue Shelters</p>
               <p className="text-3xl font-bold text-gray-900 mt-2">
                 {loading ? '...' : stats.totalCenters}
               </p>
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Admin Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* User Management */}
         <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
           <h3 className="text-lg font-semibold mb-2">User Management</h3>
@@ -147,25 +147,13 @@ export default function AdminDashboard() {
 
         {/* Center Management */}
         <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
-          <h3 className="text-lg font-semibold mb-2">Relief Centers</h3>
-          <p className="text-gray-600 text-sm mb-4">Configure relief centers and resources</p>
+          <h3 className="text-lg font-semibold mb-2">Rescue Shelters</h3>
+          <p className="text-gray-600 text-sm mb-4">Configure rescue shelters and resources</p>
           <a
             href="/admin/centers"
             className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
           >
             Manage Centers →
-          </a>
-        </div>
-
-        {/* System Settings */}
-        <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
-          <h3 className="text-lg font-semibold mb-2">System Settings</h3>
-          <p className="text-gray-600 text-sm mb-4">Configure platform settings and integrations</p>
-          <a
-            href="/admin/settings"
-            className="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors"
-          >
-            Settings →
           </a>
         </div>
       </div>

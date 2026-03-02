@@ -17,6 +17,7 @@ interface User {
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<UserRole | 'all'>('all')
 
   useEffect(() => {
@@ -25,15 +26,25 @@ export default function AdminUsersPage() {
 
   const loadUsers = async () => {
     try {
-      const { data, error } = await supabase
+      setLoading(true)
+      setError(null)
+      
+      const { data, error: supabaseError } = await supabase
         .from('users')
         .select('*')
         .order('created_at', { ascending: false })
 
-      if (error) throw error
+      if (supabaseError) {
+        console.error('Supabase error:', supabaseError)
+        throw new Error(supabaseError.message || 'Failed to load users')
+      }
+      
       setUsers(data || [])
-    } catch (error) {
-      console.error('Error loading users:', error)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load users'
+      console.error('Error loading users:', errorMessage)
+      setError(errorMessage)
+      setUsers([])
     } finally {
       setLoading(false)
     }
@@ -73,10 +84,32 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-600 mt-1">Manage system users and their permissions</p>
+          <h1 className="text-3xl font-bold text-gray-900">Tamil Nadu User Management</h1>
+          <p className="text-gray-600 mt-1">Manage Tamil Nadu system users and their permissions</p>
         </div>
       </div>
+
+      {/* Error State */}
+      {error && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div className="flex-1">
+              <div className="font-bold text-yellow-900 mb-1">Database Connection Issue</div>
+              <div className="text-sm text-yellow-800 mb-2">{error}</div>
+              <div className="text-xs text-yellow-700 bg-yellow-100 p-3 rounded border border-yellow-300">
+                <div className="font-semibold mb-1">📝 Possible solutions:</div>
+                <ol className="list-decimal ml-4 space-y-1">
+                  <li>Verify users table exists in Supabase</li>
+                  <li>Check RLS policies allow reading from users table</li>
+                  <li>Run <code className="bg-yellow-200 px-1 rounded">supabase/schema.sql</code> to create tables</li>
+                  <li>Or run <code className="bg-yellow-200 px-1 rounded">supabase/disable-rls.sql</code> to disable RLS for testing</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

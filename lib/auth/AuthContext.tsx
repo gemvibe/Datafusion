@@ -11,7 +11,7 @@ interface UserProfile {
   email: string
   name: string
   role: UserRole
-  relief_center_id?: string
+  rescue_shelter_id?: string
   is_active: boolean
 }
 

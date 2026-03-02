@@ -25,10 +25,10 @@ DROP POLICY IF EXISTS "Users can view dispatch tickets" ON dispatch_tickets;
 DROP POLICY IF EXISTS "Authenticated users can create tickets" ON dispatch_tickets;
 DROP POLICY IF EXISTS "Authenticated users can update tickets" ON dispatch_tickets;
 
--- Drop Relief Centers policies
-DROP POLICY IF EXISTS "Public can view relief centers" ON relief_centers;
-DROP POLICY IF EXISTS "Admins can manage relief centers" ON relief_centers;
-DROP POLICY IF EXISTS "Authenticated users can manage relief centers" ON relief_centers;
+-- Drop Rescue Shelters policies
+DROP POLICY IF EXISTS "Public can view rescue shelters" ON rescue_shelters;
+DROP POLICY IF EXISTS "Admins can manage rescue shelters" ON rescue_shelters;
+DROP POLICY IF EXISTS "Authenticated users can manage rescue shelters" ON rescue_shelters;
 
 -- Drop Chat Sessions policies
 DROP POLICY IF EXISTS "Users can view own chat sessions" ON chat_sessions;

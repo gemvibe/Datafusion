@@ -6,7 +6,7 @@ export interface User {
   email: string;
   phone?: string;
   role: UserRole;
-  reliefCenterId?: string;
+  rescueShelterId?: string;
   teamId?: string;
   isActive: boolean;
   skills?: string[];
@@ -14,7 +14,7 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface ReliefCenter {
+export interface RescueShelter {
   id: string;
   name: string;
   address: string;

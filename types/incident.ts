@@ -9,14 +9,12 @@ export type IncidentStatus =
 export type IncidentUrgency = "critical" | "high" | "medium" | "low";
 
 export type IncidentType =
-  | "medical"
-  | "fire"
   | "flood"
   | "earthquake"
-  | "accident"
-  | "violence"
-  | "missing_person"
-  | "other";
+  | "cyclone"
+  | "tsunami"
+  | "landslide"
+  | "heatwave";
 
 export interface Incident {
   id: string;

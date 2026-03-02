@@ -56,7 +56,7 @@ const { data, error } = await supabase
     dispatch_tickets (
       *,
       assigned_user:users (*),
-      center:relief_centers (*)
+      center:rescue_shelters (*)
     )
   `)
   .eq('id', incidentId)
@@ -133,12 +133,12 @@ const { data: message } = await supabase
   })
 ```
 
-### 8. Get Relief Centers by Distance
+### 8. Get Rescue Shelters by Distance
 ```typescript
 // You'll need to add a PostgreSQL function for this
 // Or calculate distance in your application
 const { data: centers } = await supabase
-  .from('relief_centers')
+  .from('rescue_shelters')
   .select('*')
   .eq('operational_status', 'active')
   .order('current_load', { ascending: true })

@@ -7,15 +7,9 @@ import { useAuth } from "@/lib/auth/AuthContext";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard" },
-  { name: "Map", href: "/map" },
-  { name: "Incidents", href: "/incidents" },
-  { name: "Dispatch", href: "/dispatch" },
+  { name: "Disasters", href: "/incidents" },
   { name: "Centers", href: "/centers" },
-  { name: "Teams", href: "/teams" },
-  { name: "Analytics", href: "/analytics" },
   { name: "Chatbot", href: "/chatbot" },
-  { name: "Reports", href: "/reports" },
-  { name: "Settings", href: "/settings" },
 ];
 
 export function Navbar() {
@@ -36,7 +30,7 @@ export function Navbar() {
             {/* Logo */}
             <div className="flex flex-shrink-0 items-center">
               <Link href="/" className="text-2xl font-bold text-blue-600">
-                DataFusion
+                First72 TN
               </Link>
             </div>
 
@@ -64,16 +58,16 @@ export function Navbar() {
 
           {/* Right side - User menu */}
           <div className="flex items-center space-x-4">
-            {/* Emergency Button */}
+            {/* Disaster Report Button */}
             <Link
               href="/incidents/new"
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
             >
-              🆘 Report Emergency
+              🌪️ Report Disaster
             </Link>
 
             {/* User Info & Menu */}
-            {user ? (
+            {user && (
               <div className="flex items-center space-x-3">
                 <div className="text-sm text-right">
                   <div className="font-medium text-gray-900">{profile?.name}</div>
@@ -89,13 +83,6 @@ export function Navbar() {
                   Sign Out
                 </button>
               </div>
-            ) : (
-              <Link
-                href="/login"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-md hover:bg-gray-50 transition-colors"
-              >
-                Sign In
-              </Link>
             )}
           </div>
         </div>

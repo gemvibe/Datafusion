@@ -1,8 +1,8 @@
-# 🎯 DataFusion - Complete Setup Summary
+# 🎯 First72 Tamil Nadu - Complete Setup Summary
 
 ## ✅ What Has Been Created
 
-Your comprehensive AI-powered disaster management platform is now ready with:
+Your comprehensive AI-powered disaster response platform for Tamil Nadu is now ready with:
 
 ### 1. **Project Foundation**
 - ✅ Next.js 14+ with TypeScript
@@ -17,7 +17,7 @@ All 10 pages are set up and accessible:
 2. **Map** (`/map`) - Live incident map (placeholder for Mapbox integration)
 3. **Incidents** (`/incidents`) - Incident management with filters
 4. **Dispatch** (`/dispatch`) - Smart dispatch system with Kanban board
-5. **Centers** (`/centers`) - Relief center management
+5. **Centers** (`/centers`) - Rescue shelter management
 6. **Teams** (`/teams`) - Responder team management
 7. **Analytics** (`/analytics`) - Performance metrics and insights
 8. **Chatbot** (`/chatbot`) - AI Emergency Assistant (working UI)
@@ -28,7 +28,7 @@ All 10 pages are set up and accessible:
 Complete TypeScript types in `/types`:
 - ✅ `incident.ts` - Incident models
 - ✅ `dispatch.ts` - Dispatch system
-- ✅ `user.ts` - Users and relief centers
+- ✅ `user.ts` - Users and rescue shelters
 - ✅ `chatbot.ts` - Chat sessions and messages
 
 ### 4. **Database Schema**
@@ -36,7 +36,7 @@ Complete SQL schema (`supabase/schema.sql`) with:
 - ✅ User management (Admin, Command Center, Responder, Viewer)
 - ✅ Incidents with AI analysis fields
 - ✅ Dispatch tickets with timeline
-- ✅ Relief centers with resources
+- ✅ Rescue shelters with resources
 - ✅ Chat sessions and messages
 - ✅ All relationships and indexes
 - ✅ Row Level Security (RLS) policies
@@ -150,7 +150,7 @@ Open **http://localhost:3000** 🎉
 # Tasks:
 1. [ ] Incident submission form
 2. [ ] Dispatch assignment logic
-3. [ ] Relief center CRUD
+3. [ ] Rescue shelter CRUD
 4. [ ] Responder management
 5. [ ] Real-time updates with Socket.io
 ```
@@ -179,10 +179,10 @@ export async function triageIncident(description: string) {
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   
   const prompt = `
-    Analyze this emergency incident and extract:
+    Analyze this natural disaster incident and extract:
     - urgency (critical/high/medium/low)
     - urgencyScore (1-10)
-    - type (medical/fire/flood/earthquake/accident/violence/missing_person/other)
+    - type (flood/earthquake/cyclone/tsunami/landslide/heatwave)
     - peopleAffected (estimate)
     - needTypes (array of needed resources)
     - isFakeSignal (boolean)

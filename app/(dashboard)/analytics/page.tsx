@@ -3,8 +3,8 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Analytics & Insights</h1>
-          <p className="text-gray-600 mt-1">Performance metrics and trend analysis</p>
+          <h1 className="text-3xl font-bold text-gray-900">Tamil Nadu Analytics & Insights</h1>
+          <p className="text-gray-600 mt-1">Performance metrics and trend analysis for Tamil Nadu operations</p>
         </div>
         <select className="px-4 py-2 border rounded-md">
           <option>Last 7 Days</option>

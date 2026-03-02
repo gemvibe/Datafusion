@@ -3,8 +3,8 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Reports</h1>
-          <p className="text-gray-600 mt-1">Generate and view system reports</p>
+          <h1 className="text-3xl font-bold text-gray-900">Tamil Nadu Reports</h1>
+          <p className="text-gray-600 mt-1">Generate and view system reports for Tamil Nadu operations</p>
         </div>
         <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
           📄 Generate Report
@@ -16,7 +16,7 @@ export default function ReportsPage() {
         <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer">
           <div className="text-4xl mb-3">📊</div>
           <h3 className="font-semibold text-lg mb-2">Daily Summary</h3>
-          <p className="text-sm text-gray-600">Overview of daily operations and incidents</p>
+          <p className="text-sm text-gray-600">Overview of daily operations and incidents across Tamil Nadu</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer">
           <div className="text-4xl mb-3">📈</div>

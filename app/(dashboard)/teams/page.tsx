@@ -41,7 +41,7 @@ export default function TeamsPage() {
         <div className="p-8 text-center text-gray-500">
           <div className="text-6xl mb-4">👥</div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">No Teams Yet</h3>
-          <p className="text-gray-600">Add responders to build your emergency response teams</p>
+          <p className="text-gray-600">Add responders to build your Tamil Nadu emergency response teams</p>
         </div>
       </div>
     </div>

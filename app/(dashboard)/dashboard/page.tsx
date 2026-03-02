@@ -1,28 +1,49 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+
 export default function DashboardPage() {
+  const [currentTime, setCurrentTime] = useState('')
+
+  useEffect(() => {
+    setCurrentTime(new Date().toLocaleString())
+  }, [])
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">Real-time disaster management overview</p>
+          <h1 className="text-3xl font-bold text-gray-900">Tamil Nadu Dashboard</h1>
+          <p className="text-gray-600 mt-1">Real-time disaster response across Tamil Nadu</p>
         </div>
-        <div className="text-sm text-gray-500">
-          Last updated: {new Date().toLocaleString()}
+        <div className="flex items-center gap-4">
+          {currentTime && (
+            <div className="text-sm text-gray-500">
+              Last updated: {currentTime}
+            </div>
+          )}
+          <Link
+            href="/incidents/new"
+            className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold shadow-lg hover:shadow-xl"
+          >
+            🌪️ Report Disaster
+          </Link>
         </div>
       </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Active Incidents */}
+        {/* Active Disasters */}
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Active Incidents</p>
+              <p className="text-sm font-medium text-gray-600">Active Disasters</p>
               <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
             </div>
             <div className="h-12 w-12 bg-red-100 rounded-full flex items-center justify-center">
-              <span className="text-2xl">🚨</span>
+              <span className="text-2xl">🌪️</span>
             </div>
           </div>
           <div className="mt-4 text-sm text-gray-500">
@@ -46,11 +67,11 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Relief Centers */}
+        {/* Rescue Shelters */}
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Relief Centers</p>
+              <p className="text-sm font-medium text-gray-600">Rescue Shelters</p>
               <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
             </div>
             <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
