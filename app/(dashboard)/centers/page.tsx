@@ -1,71 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase/client'
-
-interface ReliefCenter {
-  id: string
-  name: string
-  type?: string
-  address: string
-  contact_phone: string
-  contact_email?: string
-  capacity: number
-  current_load?: number
-  operational_status?: string
-  latitude: number
-  longitude: number
-  created_at: string
-}
+import { useState } from 'react'
+import { useCenters } from '@/lib/hooks/useCenters'
 
 export default function CentersPage() {
-  const [centers, setCenters] = useState<ReliefCenter[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { centers, loading, error, refetch: loadCenters } = useCenters()
   const [filterType, setFilterType] = useState<string>('all')
   const [filterStatus, setFilterStatus] = useState<string>('all')
-
-  useEffect(() => {
-    loadCenters()
-  }, [])
-
-  const loadCenters = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      
-      const { data, error: supabaseError } = await supabase
-        .from('rescue_shelters')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (supabaseError) {
-        console.error('Supabase error details:', {
-          message: supabaseError.message,
-          details: supabaseError.details,
-          hint: supabaseError.hint,
-          code: supabaseError.code,
-          full: supabaseError
-        })
-        throw new Error(supabaseError.message || supabaseError.details || 'Failed to load centers')
-      }
-      
-      if (!data) {
-        console.warn('No data returned from rescue_shelters query')
-        setCenters([])
-      } else {
-        console.log(`Successfully loaded ${data.length} centers`)
-        setCenters(data)
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load centers'
-      console.error('Error loading centers:', errorMessage, err)
-      setError(errorMessage)
-      setCenters([])
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const getStatusColor = (status?: string) => {
     if (!status) return 'bg-gray-100 text-gray-800'
@@ -111,8 +52,8 @@ export default function CentersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">🏥 Tamil Nadu Rescue Shelters</h1>
-          <p className="text-gray-600 mt-1">Find emergency response facilities near you across Tamil Nadu</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">🏥 Tamil Nadu Rescue Shelters</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Find emergency response facilities near you across Tamil Nadu</p>
         </div>
         {!loading && centers.length > 0 && (
           <div className="text-right">
@@ -124,18 +65,18 @@ export default function CentersPage() {
 
       {/* Error State */}
       {error && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 dark:border-yellow-600 rounded-lg p-4">
           <div className="flex items-start gap-3">
             <span className="text-2xl">⚠️</span>
             <div className="flex-1">
-              <div className="font-bold text-yellow-900 mb-1">Unable to Load Centers</div>
-              <div className="text-sm text-yellow-800 mb-2">{error}</div>
-              <div className="text-xs text-yellow-700">
+              <div className="font-bold text-yellow-900 dark:text-yellow-300 mb-1">Unable to Load Centers</div>
+              <div className="text-sm text-yellow-800 dark:text-yellow-400 mb-2">{error}</div>
+              <div className="text-xs text-yellow-700 dark:text-yellow-500">
                 Please contact your administrator or try again later.
               </div>
               <button
                 onClick={loadCenters}
-                className="mt-2 px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700"
+                className="mt-2 px-3 py-1 bg-yellow-600 dark:bg-yellow-700 text-white text-sm rounded hover:bg-yellow-700 dark:hover:bg-yellow-800"
               >
                 🔄 Retry
               </button>
@@ -146,24 +87,24 @@ export default function CentersPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Total Centers</p>
-          <p className="text-2xl font-bold text-gray-900">{centers.length}</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Total Centers</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{centers.length}</p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Active</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Active</p>
           <p className="text-2xl font-bold text-green-600">
             {centers.filter(c => c.operational_status?.toLowerCase() === 'active').length}
           </p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Full Capacity</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Full Capacity</p>
           <p className="text-2xl font-bold text-red-600">
             {centers.filter(c => c.operational_status?.toLowerCase() === 'full').length}
           </p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-600">Total Capacity</p>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Total Capacity</p>
           <p className="text-2xl font-bold text-blue-600">
             {centers.reduce((sum, c) => sum + (c.capacity || 0), 0).toLocaleString()}
           </p>
@@ -171,13 +112,13 @@ export default function CentersPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow flex flex-wrap gap-4">
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex flex-wrap gap-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-700">Type:</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Type:</span>
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">All Types</option>
             <option value="hospital">Medical Center</option>
@@ -189,11 +130,11 @@ export default function CentersPage() {
           </select>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-700">Status:</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Status:</span>
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -214,15 +155,15 @@ export default function CentersPage() {
         {loading ? (
           <div className="col-span-3 text-center py-12">
             <div className="text-4xl mb-4 animate-pulse">🔄</div>
-            <p className="text-gray-500">Loading rescue shelters...</p>
+            <p className="text-gray-500 dark:text-gray-400">Loading rescue shelters...</p>
           </div>
         ) : filteredCenters.length === 0 ? (
-          <div className="col-span-3 text-center py-12 bg-white rounded-lg shadow">
+          <div className="col-span-3 text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
             <div className="text-6xl mb-4">🏥</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
               {centers.length === 0 ? "No Rescue Shelters Available" : "No Shelters Match Filters"}
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
               {centers.length === 0 
                 ? "Centers will be added by administrators as they become available."
                 : "Try adjusting your filters to see more results."}
@@ -233,14 +174,14 @@ export default function CentersPage() {
             const capacityStatus = getCapacityStatus(center.capacity, center.current_load)
             
             return (
-              <div key={center.id} className="bg-white rounded-lg shadow hover:shadow-xl transition-shadow p-6">
+              <div key={center.id} className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-xl transition-shadow p-6">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">{getTypeIcon(center.type)}</span>
                     <div>
-                      <h3 className="font-semibold text-lg text-gray-900">{center.name}</h3>
-                      <p className="text-sm text-gray-500 capitalize">{center.type || 'Rescue Shelter'}</p>
+                      <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">{center.name}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{center.type || 'Rescue Shelter'}</p>
                     </div>
                   </div>
                   <span className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor(center.operational_status)}`}>
@@ -251,18 +192,18 @@ export default function CentersPage() {
                 {/* Details */}
                 <div className="space-y-3 text-sm">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-400">📍</span>
-                    <span className="text-gray-700 flex-1">{center.address}</span>
+                    <span className="text-gray-400 dark:text-gray-500">📍</span>
+                    <span className="text-gray-700 dark:text-gray-300 flex-1">{center.address}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-400">📞</span>
+                    <span className="text-gray-400 dark:text-gray-500">📞</span>
                     <a href={`tel:${center.contact_phone}`} className="text-blue-600 hover:underline">
                       {center.contact_phone}
                     </a>
                   </div>
                   {center.contact_email && (
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-400">✉️</span>
+                      <span className="text-gray-400 dark:text-gray-500">✉️</span>
                       <a href={`mailto:${center.contact_email}`} className="text-blue-600 hover:underline text-xs">
                         {center.contact_email}
                       </a>
@@ -271,20 +212,20 @@ export default function CentersPage() {
                 </div>
 
                 {/* Capacity Bar */}
-                <div className="mt-4 pt-4 border-t">
+                <div className="mt-4 pt-4 border-t dark:border-gray-700">
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-medium text-gray-700">Capacity</span>
-                    <span className="text-gray-600">
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Capacity</span>
+                    <span className="text-gray-600 dark:text-gray-400">
                       {center.current_load || 0} / {center.capacity}
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div
                       className={`${capacityStatus.color} h-2 rounded-full transition-all`}
                       style={{ width: `${Math.min(capacityStatus.percentage, 100)}%` }}
                     />
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     {center.current_load 
                       ? `${Math.round(capacityStatus.percentage)}% occupied`
                       : 'Available space'}
@@ -292,18 +233,18 @@ export default function CentersPage() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="mt-4 pt-4 border-t flex gap-2">
+                <div className="mt-4 pt-4 border-t dark:border-gray-700 flex gap-2">
                   <a
                     href={`https://www.google.com/maps/search/?api=1&query=${center.latitude},${center.longitude}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 px-3 py-2 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100 text-center"
+                    className="flex-1 px-3 py-2 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded hover:bg-blue-100 dark:hover:bg-blue-900/50 text-center"
                   >
                     🗺️ View on Map
                   </a>
                   <a
                     href={`tel:${center.contact_phone}`}
-                    className="flex-1 px-3 py-2 text-sm bg-green-50 text-green-600 rounded hover:bg-green-100 text-center"
+                    className="flex-1 px-3 py-2 text-sm bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-300 rounded hover:bg-green-100 dark:hover:bg-green-900/50 text-center"
                   >
                     📞 Call
                   </a>
@@ -316,12 +257,12 @@ export default function CentersPage() {
 
       {/* Info Section */}
       {!loading && centers.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-3 flex items-center gap-2">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2">
             <span>ℹ️</span>
             <span>Rescue Shelter Information</span>
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-blue-800">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-blue-800 dark:text-blue-200">
             <div>
               <div className="font-semibold mb-1">📞 Emergency Contact</div>
               <div>Call the center directly for immediate assistance</div>

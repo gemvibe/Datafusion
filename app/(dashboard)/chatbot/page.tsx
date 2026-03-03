@@ -294,8 +294,8 @@ export default function ChatbotPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">🤖 Tamil Nadu AI Emergency Assistant</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">🤖 Tamil Nadu AI Emergency Assistant</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             {incidentMode 
               ? "📋 Incident Reporting Mode - Collecting information step by step" 
               : "Powered by Google Gemini AI - Get instant disaster response guidance"}
@@ -347,19 +347,19 @@ export default function ChatbotPage() {
       )}
 
       {/* Chat Interface */}
-      <div className="bg-white rounded-lg shadow-lg h-[600px] flex flex-col">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg h-[600px] flex flex-col">
         {/* Chat Header */}
-        <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div className="p-4 border-b dark:border-gray-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="h-10 w-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
                 {incidentMode ? '📋' : '🤖'}
               </div>
               <div className="ml-3">
-                <div className="font-semibold text-gray-900">
+                <div className="font-semibold text-gray-900 dark:text-gray-100">
                   {incidentMode ? 'Incident Reporting Assistant' : 'First72 Emergency AI'}
                 </div>
-                <div className="text-xs text-gray-600">
+                <div className="text-xs text-gray-600 dark:text-gray-400">
                   {incidentMode 
                     ? 'Guiding you through the reporting process' 
                     : 'Specialized in Tamil Nadu disasters • Gemini-powered'}
@@ -378,8 +378,7 @@ export default function ChatbotPage() {
                       content: "Incident reporting cancelled. How else can I help you today?",
                     },
                   ]);
-                }}
-                className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                }}                className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
               >
                 ✕ Cancel
               </button>
@@ -388,7 +387,7 @@ export default function ChatbotPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50">
+        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50 dark:bg-gray-900">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -398,7 +397,7 @@ export default function ChatbotPage() {
                 className={`max-w-md px-4 py-3 rounded-lg shadow-sm ${
                   message.role === "user"
                     ? "bg-blue-600 text-white rounded-br-none"
-                    : "bg-white text-gray-900 border border-gray-200 rounded-bl-none"
+                    : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-bl-none"
                 }`}
               >
                 <div className="text-sm whitespace-pre-wrap">{message.content}</div>
@@ -409,8 +408,8 @@ export default function ChatbotPage() {
           {/* Loading indicator */}
           {loading && (
             <div className="flex justify-start">
-              <div className="max-w-md px-4 py-3 rounded-lg bg-white border border-gray-200 rounded-bl-none shadow-sm">
-                <div className="flex items-center gap-2 text-gray-600">
+              <div className="max-w-md px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-bl-none shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                   <div className="flex gap-1">
                     <span className="animate-bounce">●</span>
                     <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>●</span>
@@ -425,26 +424,26 @@ export default function ChatbotPage() {
           {/* Incident Mode Progress Indicator */}
           {incidentMode && !isIncidentDataComplete(incidentData) && (
             <div className="flex justify-center">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md w-full">
-                <div className="text-sm font-semibold text-blue-900 mb-2">📋 Collecting Incident Information:</div>
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-md w-full">
+                <div className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">📋 Collecting Incident Information:</div>
                 <div className="space-y-1 text-xs">
-                  <div className={`flex items-center gap-2 ${incidentData.incidentType ? 'text-green-600' : 'text-gray-500'}`}>
+                  <div className={`flex items-center gap-2 ${incidentData.incidentType ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
                     <span>{incidentData.incidentType ? '✅' : '⬜'}</span>
                     <span>Disaster Type {incidentData.incidentType ? `(${incidentData.incidentType})` : ''}</span>
                   </div>
-                  <div className={`flex items-center gap-2 ${incidentData.description ? 'text-green-600' : 'text-gray-500'}`}>
+                  <div className={`flex items-center gap-2 ${incidentData.description ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
                     <span>{incidentData.description ? '✅' : '⬜'}</span>
                     <span>Description {incidentData.description ? '(✓)' : ''}</span>
                   </div>
-                  <div className={`flex items-center gap-2 ${incidentData.location ? 'text-green-600' : 'text-gray-500'}`}>
+                  <div className={`flex items-center gap-2 ${incidentData.location ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
                     <span>{incidentData.location ? '✅' : '⬜'}</span>
                     <span>Location {incidentData.location ? '(✓)' : ''}</span>
                   </div>
-                  <div className={`flex items-center gap-2 ${incidentData.contactName ? 'text-green-600' : 'text-gray-500'}`}>
+                  <div className={`flex items-center gap-2 ${incidentData.contactName ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
                     <span>{incidentData.contactName ? '✅' : '⬜'}</span>
                     <span>Your Name {incidentData.contactName ? `(${incidentData.contactName})` : ''}</span>
                   </div>
-                  <div className={`flex items-center gap-2 ${incidentData.contactPhone ? 'text-green-600' : 'text-gray-500'}`}>
+                  <div className={`flex items-center gap-2 ${incidentData.contactPhone ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
                     <span>{incidentData.contactPhone ? '✅' : '⬜'}</span>
                     <span>Phone Number {incidentData.contactPhone ? `(${incidentData.contactPhone})` : ''}</span>
                   </div>
@@ -456,10 +455,10 @@ export default function ChatbotPage() {
           {/* Report Suggestion */}
           {showReportSuggestion && (
             <div className="flex justify-center">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md">
-                <div className="text-sm text-green-900 mb-3">
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 max-w-md">
+                <div className="text-sm text-green-900 dark:text-green-300 mb-3">
                   <span className="font-semibold">📋 Ready to file an official report?</span>
-                  <p className="text-green-700 mt-1">Based on our conversation, you may want to submit an incident report to alert response teams.</p>
+                  <p className="text-green-700 dark:text-green-400 mt-1">Based on our conversation, you may want to submit an incident report to alert response teams.</p>
                 </div>
                 <Link 
                   href="/incidents/new"
@@ -475,8 +474,8 @@ export default function ChatbotPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="px-4 py-3 border-t bg-white">
-          <div className="text-xs text-gray-500 mb-2 font-semibold">
+        <div className="px-4 py-3 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold">
             {incidentMode ? 'Quick Responses:' : 'Quick Actions:'}
           </div>
           {incidentMode ? (
@@ -486,21 +485,21 @@ export default function ChatbotPage() {
                   <button 
                     onClick={() => handleSend('Flood')}
                     disabled={loading}
-                    className="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 border border-blue-200 rounded-full hover:bg-blue-100 transition-colors disabled:opacity-50 font-medium"
+                    className="px-3 py-1.5 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors disabled:opacity-50 font-medium"
                   >
                     🌊 Flood
                   </button>
                   <button 
                     onClick={() => handleSend('Earthquake')}
                     disabled={loading}
-                    className="px-3 py-1.5 text-sm bg-orange-50 text-orange-700 border border-orange-200 rounded-full hover:bg-orange-100 transition-colors disabled:opacity-50 font-medium"
+                    className="px-3 py-1.5 text-sm bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-700 rounded-full hover:bg-orange-100 dark:hover:bg-orange-900/50 transition-colors disabled:opacity-50 font-medium"
                   >
                     🏚️ Earthquake
                   </button>
                   <button 
                     onClick={() => handleSend('Cyclone')}
                     disabled={loading}
-                    className="px-3 py-1.5 text-sm bg-purple-50 text-purple-700 border border-purple-200 rounded-full hover:bg-purple-100 transition-colors disabled:opacity-50 font-medium"
+                    className="px-3 py-1.5 text-sm bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors disabled:opacity-50 font-medium"
                   >
                     🌀 Cyclone
                   </button>
@@ -518,7 +517,7 @@ export default function ChatbotPage() {
                   <button 
                     onClick={() => handleSend('cancel')}
                     disabled={loading || creatingIncident}
-                    className="px-3 py-1.5 text-sm bg-red-50 text-red-700 border border-red-200 rounded-full hover:bg-red-100 transition-colors disabled:opacity-50 font-medium"
+                    className="px-3 py-1.5 text-sm bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50 font-medium"
                   >
                     ❌ Cancel
                   </button>
@@ -530,28 +529,28 @@ export default function ChatbotPage() {
               <button 
                 onClick={() => handleQuickAction('flood', 'Flood emergency guidance')}
                 disabled={loading}
-                className="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 border border-blue-200 rounded-full hover:bg-blue-100 transition-colors disabled:opacity-50 font-medium"
+                className="px-3 py-1.5 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors disabled:opacity-50 font-medium"
               >
                 🌊 Flood
               </button>
               <button 
                 onClick={() => handleQuickAction('earthquake', 'Earthquake safety steps')}
                 disabled={loading}
-                className="px-3 py-1.5 text-sm bg-orange-50 text-orange-700 border border-orange-200 rounded-full hover:bg-orange-100 transition-colors disabled:opacity-50 font-medium"
+                className="px-3 py-1.5 text-sm bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-700 rounded-full hover:bg-orange-100 dark:hover:bg-orange-900/50 transition-colors disabled:opacity-50 font-medium"
               >
                 🏚️ Earthquake
               </button>
               <button 
                 onClick={() => handleQuickAction('cyclone', 'Cyclone preparation')}
                 disabled={loading}
-                className="px-3 py-1.5 text-sm bg-purple-50 text-purple-700 border border-purple-200 rounded-full hover:bg-purple-100 transition-colors disabled:opacity-50 font-medium"
+                className="px-3 py-1.5 text-sm bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors disabled:opacity-50 font-medium"
               >
                 🌀 Cyclone
               </button>
               <button 
                 onClick={() => handleQuickAction('safety', 'General safety tips')}
                 disabled={loading}
-                className="px-3 py-1.5 text-sm bg-green-50 text-green-700 border border-green-200 rounded-full hover:bg-green-100 transition-colors disabled:opacity-50 font-medium"
+                className="px-3 py-1.5 text-sm bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700 rounded-full hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors disabled:opacity-50 font-medium"
               >
                 💡 Safety Tips
               </button>
@@ -560,7 +559,7 @@ export default function ChatbotPage() {
         </div>
 
         {/* Input */}
-        <div className="p-4 border-t bg-gray-50">
+        <div className="p-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           <div className="flex gap-2">
             <input
               type="text"
@@ -569,7 +568,7 @@ export default function ChatbotPage() {
               onKeyPress={(e) => e.key === "Enter" && !loading && handleSend()}
               disabled={loading}
               placeholder="Ask about any disaster emergency in Tamil Nadu..."
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             />
             <button
               onClick={() => handleSend()}
@@ -579,18 +578,18 @@ export default function ChatbotPage() {
               {loading ? '⏳' : '📤'} Send
             </button>
           </div>
-          <div className="text-xs text-gray-500 mt-2 text-center">
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
             💬 Powered by Gemini AI • Responses based on Tamil Nadu disaster protocols
           </div>
         </div>
       </div>
 
       {/* Features */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-blue-900 mb-3 flex items-center gap-2">
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 border border-blue-200 dark:border-gray-600 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2">
           <span>🤖</span> AI Emergency Assistant Capabilities
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-blue-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-blue-800 dark:text-blue-200">
           <div className="flex items-start gap-2">
             <span>✓</span>
             <span><strong>Real-time guidance</strong> for floods, earthquakes, cyclones, tsunamis, landslides, heatwaves</span>
@@ -617,8 +616,8 @@ export default function ChatbotPage() {
           </div>
         </div>
         
-        <div className="mt-4 pt-4 border-t border-blue-200">
-          <div className="text-sm text-blue-700">
+        <div className="mt-4 pt-4 border-t border-blue-200 dark:border-gray-600">
+          <div className="text-sm text-blue-700 dark:text-blue-300">
             <strong>⚠️ Important:</strong> For life-threatening emergencies, always call <strong>112</strong> first. This AI assistant provides guidance but does not replace emergency services.
           </div>
         </div>

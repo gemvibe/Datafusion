@@ -160,10 +160,18 @@ export function IncidentMap({
 }: IncidentMapProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [selectedIncident, setSelectedIncident] = useState<string | null>(null);
+  const [mapKey, setMapKey] = useState(0);
 
-  // Prevent hydration mismatch
+  // Prevent hydration mismatch and force remount to avoid Leaflet reuse errors
   useEffect(() => {
     setIsMounted(true);
+    // Generate a unique key to avoid map container reuse issues
+    setMapKey(Date.now());
+    
+    return () => {
+      // Cleanup on unmount
+      setIsMounted(false);
+    };
   }, []);
 
   // Check if incident is new (created in last 5 minutes)
@@ -174,8 +182,8 @@ export function IncidentMap({
 
   if (!isMounted) {
     return (
-      <div className="w-full h-[600px] bg-gray-100 rounded-lg flex items-center justify-center">
-        <div className="text-gray-500">Loading First72 Map...</div>
+      <div className="w-full h-[600px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center transition-colors duration-200">
+        <div className="text-gray-500 dark:text-gray-400">Loading Hope Link Map...</div>
       </div>
     );
   }
@@ -192,10 +200,12 @@ export function IncidentMap({
 
   return (
     <MapContainer
+      key={mapKey}
       center={center}
       zoom={zoom}
       scrollWheelZoom={true}
       className="w-full h-[600px] rounded-lg shadow-lg"
+      style={{ height: '600px', width: '100%' }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

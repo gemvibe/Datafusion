@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
+import { isAdminEmail } from '@/lib/config/admin-emails'
 import Link from 'next/link'
 
 export default function SignupPage() {
@@ -33,13 +34,16 @@ export default function SignupPage() {
 
       if (authError) throw authError
 
-      // Create user profile
+      // Create user profile with appropriate role
       if (authData.user) {
+        // Check if email is in admin list
+        const userRole = isAdminEmail(email) ? 'admin' : 'user'
+        
         const { error: profileError } = await supabase.from('users').insert({
           id: authData.user.id,
           email,
           name,
-          role: 'responder', // Default role
+          role: userRole, // Assign admin role if email is authorized
           is_active: true,
         })
 

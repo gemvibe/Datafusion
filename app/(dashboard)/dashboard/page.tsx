@@ -2,8 +2,25 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { useIncidents } from '@/lib/hooks/useIncidents'
 import { supabase } from '@/lib/supabase/client'
+
+// Import map component with no SSR to avoid "window is not defined" error
+const IncidentMap = dynamic(
+  () => import("@/components/shared/IncidentMap").then((mod) => mod.IncidentMap),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center transition-colors duration-200">
+        <div className="text-center">
+          <div className="text-4xl mb-2">🗺️</div>
+          <div className="text-gray-600 dark:text-gray-300">Loading map...</div>
+        </div>
+      </div>
+    )
+  }
+)
 
 interface ReliefCenter {
   id: string
@@ -99,42 +116,12 @@ export default function CommandCenterDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* LEFT: Live Map */}
         <div className="lg:col-span-1">
-          <div className="command-card p-0 overflow-hidden" style={{height: '600px'}}>
-            <div className="relative w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center transition-colors duration-200">
-              {/* Map Placeholder */}
-              <div className="text-center p-8">
-                <div className="text-6xl mb-4">🗺️</div>
-                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Interactive Map View</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">Real-time incident tracking across Tamil Nadu</p>
-                <Link 
-                  href="/map"
-                  className="inline-block px-6 py-3 bg-[#0B3D91] text-white rounded-lg font-semibold hover:bg-blue-800 transition-colors"
-                >
-                  Open Full Map →
-                </Link>
-              </div>
-
-              {/* Map Floating Controls */}
-              <div className="absolute top-4 right-4 space-y-2">
-                <button className="glass-card px-3 py-2 text-sm font-medium hover:bg-white/90 dark:hover:bg-gray-700/90 transition-colors dark:text-gray-100">
-                  📍 Locate Me
-                </button>
-                <div className="glass-card px-2 py-1 flex flex-col gap-1">
-                  <button className="px-3 py-1 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded dark:text-gray-100">+</button>
-                  <div className="h-px bg-gray-300 dark:bg-gray-600"></div>
-                  <button className="px-3 py-1 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded dark:text-gray-100">−</button>
-                </div>
-                <button className="glass-card px-3 py-2 text-sm">🧭</button>
-              </div>
-
-              {/* Sample Map Markers */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="relative">
-                  <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg animate-pulse">!</div>
-                  <div className="absolute inset-0 w-8 h-8 bg-red-500 rounded-full opacity-20 pulse-ring"></div>
-                </div>
-              </div>
-            </div>
+          <div className="command-card p-0 overflow-hidden rounded-lg shadow-lg h-[600px]">
+            <IncidentMap 
+              incidents={incidents}
+              showRouting={true}
+              highlightCritical={true}
+            />
           </div>
 
           {/* Alert Ticker */}

@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || '')
 
 // System prompt for emergency assistant
-const SYSTEM_PROMPT = `You are an AI Emergency Assistant for Tamil Nadu's First72 disaster response system. Your role is to:
+const SYSTEM_PROMPT = `You are an AI Emergency Assistant for Tamil Nadu's Hope Link disaster response system. Your role is to:
 
 1. **Provide immediate emergency guidance** for natural disasters (floods, earthquakes, cyclones, tsunamis, landslides, heatwaves)
 2. **Stay calm and reassuring** - people are in distress
@@ -224,9 +224,9 @@ export async function GET() {
   const hasApiKey = !!process.env.GOOGLE_GEMINI_API_KEY
   
   return NextResponse.json({
-    service: 'First72 Tamil Nadu Chat API',
+    service: 'Hope Link Tamil Nadu Chat API',
     status: hasApiKey ? 'configured' : 'missing_api_key',
-    model: 'gemini-1.5-flash',
+    model: 'gemini-2.5-flash',
     message: hasApiKey 
       ? 'Chat API is ready to assist with emergencies'
       : 'Please add GOOGLE_GEMINI_API_KEY to .env.local file'

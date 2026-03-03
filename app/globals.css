@@ -101,4 +101,21 @@
       transform: translateX(-100%);
     }
   }
+
+  /* Leaflet map container fixes */
+  .leaflet-container {
+    @apply rounded-lg;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+  }
+
+  .leaflet-pane {
+    z-index: 0;
+  }
+
+  /* Ensure proper stacking in dark mode */
+  .dark .leaflet-container {
+    filter: brightness(0.9) contrast(1.1);
+  }
 }

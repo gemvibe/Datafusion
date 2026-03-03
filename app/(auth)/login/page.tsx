@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
+import { isAdminEmail } from '@/lib/config/admin-emails'
 import Link from 'next/link'
 
 export default function LoginPage() {
@@ -25,6 +26,9 @@ export default function LoginPage() {
 
       if (error) throw error
 
+      // Check if this email is authorized as admin
+      const userIsAdmin = isAdminEmail(data.user.email)
+
       // Get user profile to determine where to redirect
       const { data: profile, error: profileError } = await supabase
         .from('users')
@@ -34,7 +38,7 @@ export default function LoginPage() {
 
       if (profileError) {
         console.error('Profile error:', profileError)
-        // If profile doesn't exist, create it with default role
+        // If profile doesn't exist, create it with appropriate role
         if (profileError.code === 'PGRST116') {
           const { error: insertError } = await supabase
             .from('users')
@@ -42,7 +46,7 @@ export default function LoginPage() {
               id: data.user.id,
               email: data.user.email!,
               name: data.user.email?.split('@')[0] || 'User',
-              role: 'responder',
+              role: userIsAdmin ? 'admin' : 'user',
               is_active: true,
             })
 
@@ -53,18 +57,21 @@ export default function LoginPage() {
             return
           }
           
-          // Default to dashboard for newly created responder profile
-          router.push('/dashboard')
+          // Redirect based on admin status
+          router.push(userIsAdmin ? '/admin' : '/dashboard')
           return
         } else {
           throw profileError
         }
       }
 
-      // Redirect based on role
-      if (profile?.role === 'admin') {
+      // Only redirect to admin if BOTH conditions are met:
+      // 1. Email is in the admin emails list
+      // 2. Database role is admin
+      if (userIsAdmin && profile?.role === 'admin') {
         router.push('/admin')
       } else {
+        // All non-admin users go to dashboard
         router.push('/dashboard')
       }
     } catch (err: any) {

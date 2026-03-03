@@ -7,7 +7,7 @@ import { Providers } from "@/components/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "First72 Tamil Nadu - AI-Powered Disaster Response",
+  title: "Hope Link - AI-Powered Disaster Response",
   description: "Tamil Nadu's intelligent disaster response platform with AI-powered triage and emergency assistance",
 };
 
